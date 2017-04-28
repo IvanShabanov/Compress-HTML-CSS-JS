@@ -97,8 +97,14 @@ function compressJS($buffer) {
 /* Trim строк */
     $buffer = preg_replace('/(\n[\s]*)/', "\n", $buffer);
     $buffer = preg_replace('/([\s]*)\n/', "\n", $buffer);
-/*  убрать перевод строк где есть ; на конце */
+    $buffer = str_replace(array(' =', '= '), "=", $buffer);
+
+/*  убрать перевод строк где это можно делать */
     $buffer = preg_replace('/(;\n)/', ";", $buffer);
+    $buffer = preg_replace('/(,\n)/', ", ", $buffer);
+    $buffer = preg_replace('/({\n)/', "{", $buffer);
+    $buffer = preg_replace('/(\n})/', "}", $buffer);
+    $buffer = preg_replace('/(}\n})/', "}}", $buffer);
     
     return $buffer;
 }
