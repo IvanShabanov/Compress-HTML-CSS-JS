@@ -3,8 +3,6 @@ if(empty($_GET['handle'])) {
     ob_start ("compressHtmlCssJs");
 }    
 
-
-
 function Var_Dump_my($dump, $level = 0) {
   $result = '';
   if (is_array($dump)) {
@@ -80,7 +78,7 @@ function findCompressCss($buffer) {
             $info = unserialize($css_old_compress);
           }
           if (($curinfo['size'] != $info['size']) or ($curinfo['time'] != $info['time']))  {
-            file_put_contents($file_css_new, '/* !!! Правьте файл / Edit file :'.$output_link[1][$key].' !!! Этот файл будет сгенерирован автоматически при изменении оригинала / This file will be automaticly update  -==='.serialize($curinfo).'===- */'.compressCss(file_get_contents($file_css)));
+            file_put_contents($file_css_new, '/* !!! Оригинальный файл / Original file :'.$output_link[1][$key].' !!! Этот файл будет сгенерирован автоматически при изменении оригинала / This file will be automaticly update  -==='.serialize($curinfo).'===- */'.compressCss(file_get_contents($file_css)));
           }
           $buffer = str_replace($output_link[0][$key], $link_new, $buffer);
         }
@@ -93,6 +91,15 @@ function findCompressCss($buffer) {
 }
 
 function compressJS($buffer) {
+/* Комментарии */
+    $buffer = preg_replace('/(\/\/.*\n)/', '', $buffer);
+    $buffer = preg_replace('/(\/\*([^(\*\/)]*)\*\/)/', '', $buffer);
+/* Trim строк */
+    $buffer = preg_replace('/(\n[\s]*)/', "\n", $buffer);
+    $buffer = preg_replace('/([\s]*)\n/', "\n", $buffer);
+/*  убрать перевод строк где есть ; на конце */
+    $buffer = preg_replace('/(;\n)/', ";", $buffer);
+    
     return $buffer;
 }
 
@@ -148,7 +155,7 @@ function findCompressJS($buffer) {
             $info = unserialize($js_old_compress);
           }
           if (($curinfo['size'] != $info['size']) or ($curinfo['time'] != $info['time']))  {
-            file_put_contents($file_js_new, '/* !!! Правьте файл / Edit file :'.$out_script[1][$key].' !!! Этот файл будет сгенерирован автоматически при изменении оригинала / This file will be automaticly update  -==='.serialize($curinfo).'===- */'.compressJS(file_get_contents($file_js)));
+            file_put_contents($file_js_new, '/* !!! Оригинальный файл / Original file :'.$out_script[1][$key].' !!! Этот файл будет сгенерирован автоматически при изменении оригинала / This file will be automaticly update  -==='.serialize($curinfo).'===- */'.compressJS(file_get_contents($file_js)));
           }
           $buffer = str_replace($out_script[0][$key], $link_new, $buffer);
         }
@@ -178,7 +185,7 @@ function compressHtmlCssJs($buffer) {
 	if(empty(Kernel::$in['handle']) && empty(Kernel::$in['file']) && empty(Kernel::$in['download']) && empty(Kernel::$in['vip3']) && flag!=1) {
     $buffer = compressHtml($buffer);
     $buffer = findCompressCss($buffer);
-    //$buffer = findCompressJS($buffer);
+    $buffer = findCompressJS($buffer);
   }    
     return $buffer;
 }
