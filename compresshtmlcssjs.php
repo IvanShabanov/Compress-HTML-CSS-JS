@@ -188,10 +188,10 @@ function compressHtml($buffer) {
 
 function compressHtmlCssJs($buffer) {
   global $debug;
-	if(empty(Kernel::$in['handle']) && empty(Kernel::$in['file']) && empty(Kernel::$in['download']) && empty(Kernel::$in['vip3']) && flag!=1) {
+  //if(empty(Kernel::$in['handle']) && empty(Kernel::$in['file']) && empty(Kernel::$in['download']) && empty(Kernel::$in['vip3']) && flag!=1) {
     $buffer = compressHtml($buffer);
     $buffer = findCompressCss($buffer);
     $buffer = findCompressJS($buffer);
-  }    
+  //}    
     return $buffer;
 }
